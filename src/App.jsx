@@ -5,6 +5,9 @@ import LangSwitcher from './Components/LangSwitcher'
 import Coffe from './Components/Coffe';
 import TermsConditions from './Components/TermsConditions';
 import LoginForm from './Components/LoginForm';
+import FeedbackForm from './Components/FeedbackForm';
+import * as Yup from "yup";
+
 
 function App() {
   // Lang
@@ -44,6 +47,27 @@ function App() {
   };
   //------------------------------------------------------
 
+  // FeedbackForm
+  const FeedbackSchema = Yup.object().shape({
+    username: Yup.string().min(2, "Too Short!").max(15, "Too Long!").required("Required"),
+    email: Yup.string().email("Must be a valid email!").required("Required"),
+    message: Yup.string().min(5, "Too short").max(256, "Too long").required("Required"),
+    level: Yup.string().oneOf(["good", "neutral", "bad"]).required("Required"),
+  });
+
+  const initialValues = {
+    username: "",
+    email: "",
+    message: "",
+    level: "good",
+  };
+
+  const handleSubmitFeedback = (values, actions) => {
+    console.log(values);
+    actions.resetForm();
+  };
+  //---------------------------------------------------------------------------------------
+
   return (
     <>
       <SearchBar />
@@ -52,6 +76,7 @@ function App() {
       <Coffe value={coffeeSize} onSelect={setCoffeeSize}/>
       <TermsConditions value={hasAccepted} onSelect={setHasAccepted}/>
       <LoginForm value={values} handleChange={handleChange} handleSubmit={handleSubmit} />
+      <FeedbackForm feedbackSchema={FeedbackSchema} initialValues={initialValues} handleSubmit={handleSubmitFeedback}/>
     </>
   )
 }
